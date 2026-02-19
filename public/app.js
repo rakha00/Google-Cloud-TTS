@@ -203,7 +203,10 @@ async function testCurrentVoice() {
   }
   
   const sampleText = sampleTexts[selectedLangCode] || 'Hello, this is a test';
-  const voice = currentLanguageVoices[0]; // Use first available voice
+  
+  // Get selected voice from dropdown
+  const selectedVoiceName = voiceSelect.value;
+  const voice = currentLanguageVoices.find(v => v.name === selectedVoiceName) || currentLanguageVoices[0];
   
   testBtn.dataset.originalText = testBtn.textContent;
   testBtn.innerHTML = '<span class="loading-spinner" style="width:12px;height:12px;margin:0;"></span>';
@@ -311,7 +314,6 @@ async function speak() {
   
   const playBtn = document.getElementById('playBtn');
   const status = document.getElementById('status');
-  const audioPlayer = document.getElementById('audioPlayer');
   
   if (!text) {
     showStatus('Please enter some text', 'error');
@@ -342,21 +344,16 @@ async function speak() {
       throw new Error(error.message || 'Failed to generate audio');
     }
     
-    // Get audio blob
+    // Get audio blob and play
     const audioBlob = await response.blob();
     const audioUrl = URL.createObjectURL(audioBlob);
     
-    // Set audio source and play
-    audioPlayer.src = audioUrl;
-    audioPlayer.style.display = 'block';
-    audioPlayer.play();
+    // Play audio without showing player
+    const audio = new Audio(audioUrl);
+    audio.play();
     
-    showStatus('Playing audio...', 'success');
-    
-    // Hide success message after audio ends
-    audioPlayer.onended = () => {
-      status.style.display = 'none';
-    };
+    // Clear status after audio starts
+    status.style.display = 'none';
     
   } catch (error) {
     console.error('Error:', error);

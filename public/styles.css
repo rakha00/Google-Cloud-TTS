@@ -147,12 +147,6 @@ select:focus {
   display: block;
 }
 
-audio {
-  width: 100%;
-  margin-top: 16px;
-  display: none;
-}
-
 .loading-spinner {
   display: inline-block;
   width: 14px;
